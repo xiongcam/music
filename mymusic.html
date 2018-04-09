@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+    <meta HTTP-EQUIV="Expires" CONTENT="0">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <title>myMusic</title>
+    <link rel="stylesheet" type="text/css" href="F/font/iconfont.css">
+    <style type="text/css" media="screen">
+        *{margin:0;padding:0;}
+        html{width: 100%;height:100%;overflow:hidden;}
+        body{width: 100%;height:100%;}
+        li{list-style:none;}
+        .clearfix:after,.clear:before{
+            content:"";
+            display:block;
+            height:0;
+            visibility:hidden;
+            clear:both;
+        }
+        .title{font-size:.875rem;padding:.625rem 0 0 .625rem;}
+        .name{color:#b3b3b3;font-size:.75rem;padding:.05078125rem/* .8125px */ 0 0 0.625rem;}
+        .active{background-color:#eee;}
+        #myMusic{width: 100%;height:100%;position: relative;background:#fff;/* -webkit-radial-gradient(-80% 90%,circle, #793131,black) */;}
+        #header{width: 100%;height:2.5rem;/* 40px */background:rgb(41,171,226);position: absolute;top:0;z-index:100;}
+        #header p{width: 100%;height:2.5rem;line-height:2.5rem;padding:0 .625rem;font-size:1.25rem;box-sizing:border-box;color: #fff;}
+        #header p span{padding:0 0 0 .625rem;}
+        #content {width: 100%;height:100%;padding:2.5rem .625rem 4.0625rem .625rem;box-sizing:border-box;overflow:hidden;position: relative;z-index:2;}
+        #content .music-list{width: 100%;position:absolute;transform: translate3d(0,0, 0);}
+        #content .music-list li{width: 100%;height:3.125rem;border-bottom:1px solid #eee;}
+        #content .music-list >li>div{width: 90%;float: left;}
+        #content .music-list li>p{width: 10%;height:3.125rem;line-height: 3.125rem;float: right;color:#ccc;}
+        #footer {width: 100%;height:4.0625rem;background:#fff;position: absolute;bottom:0;border-top:1px solid #ccc;z-index:100;}
+        #footer .audioImg{width: 3.125rem/* 50px */;height:3.125rem;border-radius:50%;margin:.4375rem 0 .4375rem .9375rem;/* float: left; */}
+        #footer .audioImg.Rotate{animation:6s infinite linear move;-webkit-animation: move 20s infinite linear;}
+        /* 同一个标签的class不空格 并且 */
+        @keyframes move{
+            0%{transform:rotate(0deg);}
+            100%{transform:rotate(360deg);}
+        }
+        @-webkit-keyframes move{
+            0%{transform:rotate(0deg);}
+            100%{transform:rotate(360deg);}
+        }
+        #footer .footer-r{float: right;width: 70%;height:4.0625rem; margin-right:.625rem;}
+        #footer .footer-r .progress{width: 100%;border-bottom:2px solid #fff;margin:.625rem 0;position: relative;border-color:#ccc;}
+        #footer .footer-r .progress-UP{width: 0;border-bottom:2px solid rgb(41,171,226);position: absolute;top:0;left: 0;}
+        #footer .footer-r .progress b{width: .625rem;height: .625rem;border-radius:50%;background-color:rgb(41,171,226);position: absolute;top: 0;left: 0;margin:-.3125rem;}
+        #footer .footer-r .footer-r-b{height:2.5rem;}
+        #footer .footer-r .footer-r-b .audioTxt{float: left;}
+        #footer .footer-r .footer-r-b .audioTxt h4{padding:0;}
+        #footer .footer-r .footer-r-b .audioBtn{float: right;height:2.5rem;line-height:2.5rem; }
+        #footer .footer-r .footer-r-b .audioBtn span{font-size:1.5rem;color:#999;padding:.625rem;}
+
+        #music-detail{width: 100%;height:100%;background:#ccc;position:absolute;left: 0;top: 0;z-index:101;transform:rotate(90deg);transform-origin:right bottom;transition: .2s;}
+        #music-detail .music-detail-header,
+        #message .message-header{width: 100%;height:3.75rem;line-height:3.75rem;font-size:0;}
+        #music-detail .music-detail-header span{width: 10%;display:inline-block;font-size:1.25rem;text-align:center;}
+        #music-detail .music-detail-header>div,
+        #message .message-header div{width: 80%;display:inline-block;font-size:1.125rem;}
+        #music-detail .music-detail-header>div>p,
+        #message .message-header div p{height:1.875rem;font-size:1.125rem;line-height:1.875rem;text-align:center;}
+        #music-detail .music-detail-content{position:absolute;top:2.5rem;bottom:8.125rem;margin:2rem 0;width: 100%;/* padding-bottom:8.125rem; */overflow:hidden;box-sizing:border-box;}
+        #music-detail .music-detail-content ul{width: 100%;box-sizing:border-box;position:absolute;top:50%;overflow:hidden;}
+        #music-detail .music-detail-content li{width: 100%;text-align:center;padding-top:.625rem;font-size:.875rem;}
+        #music-detail .music-detail-content .Lyactive{color:rgb(41,171,226);}
+        #music-detail .music-detail-footer{width: 100%;height:8.125rem;position:absolute;bottom:0;left: 0;}
+        #music-detail .music-detail-footer .music-detail-footerT{width: 100%;height:1.875rem;}
+        #music-detail .music-detail-footer .music-detail-footerT ul{margin:0 1.875rem;}
+        #music-detail .music-detail-footer .music-detail-footerT li{float: left;height:1.875rem;width: 3.125rem;font-size:1.5rem;text-align:center;color:#fff;margin:0 1rem;position: relative;}
+        #music-detail .music-detail-footerT li:nth-of-type(3) span{width: 1.5rem;height:1.5rem;position:absolute;top:-0.7rem;right: 0;font-size:.75rem;font-weight:normal;}
+        #music-detail .music-detail-footer .music-detail-footerC{width: 100%;height:1.25rem;font-size:0;}
+        #music-detail .music-detail-footer .music-detail-footerC span{width: 15%;display:inline-block;font-size:.75rem;text-align:center;}
+        #music-detail .music-detail-footer .music-detail-footerC>div{width: 70%;display:inline-block;}
+        #music-detail .music-detail-footer .progress{border-bottom:2px solid #fff;position: relative;}
+        #music-detail .music-detail-footer .progress .proup{width: 0;border-bottom:2px solid rgb(41,171,226);;position: absolute;top:0;left: 0;}
+        #music-detail .music-detail-footer .progress b{width: .625rem;height: .625rem;border-radius:50%;background-color:#fff;position: absolute;top: 0;left: 0;margin:-.3125rem;}
+        #music-detail .music-detail-footer .music-detail-footerB{height:5rem;line-height:5rem;
+        }
+        #music-detail .music-detail-footer .music-detail-footerB li{float: left;font-size:2rem;color:#fff;width: 25%;border-radius:50%;padding-left:5px;box-sizing:border-box;}
+        #music-detail .music-detail-footer .music-detail-footerB li:nth-of-type(3){font-size:3rem;color:#fff;}
+        #music-detail .music-detail-footer .playWay{width:6.25rem/* 100px */;position: absolute;left:.3125rem;top:-1.875rem;display:none;}
+        #music-detail .music-detail-footer .playWay li{width: 100%;height:1.875rem;line-height:1.875rem;background:#ccc;text-align:center;color:#fff;}
+        /* #footer:hover #music-detail{transform:rotate(0deg);transform-origin:right bottom;transition: 1s;} */
+
+        #message{width: 100%;height:100%;background:#fff;position:absolute;top: 0;z-index:105;}
+        #message-content{width: 100%;position:absolute;top:3.75rem;bottom:1.875rem;overflow:hidden;}
+        #message-content ul{width: 100%;padding:.625rem;box-sizing:border-box;}
+        #message-content ul li{width: 100%;font-size:1rem;padding-top:.625rem;box-sizing:border-box;}
+        #message-footer{width: 100%;height:1.875rem;position: absolute;bottom: 0;font-size:0;}
+        #message-footer input[type="text"]{width: 80%;font-size:.875rem;outline:none;box-sizing:border-box;}
+        #message-footer input[type="button"]{width: 20%;font-size:.875rem;box-sizing:border-box;}
+        #message .message-header span{width: 10%;display:inline-block;height:2.5rem;font-size:1rem;text-align:center;}
+    </style>
+</head>
+<body>
+    <div id="myMusic">
+        <div id="header">
+            <p><i class="iconfont icon-fanhui"></i><span>本地音乐</span></p>
+        </div>
+        <div id="content">
+            <ul class="music-list">
+                <!-- <li>
+                    <div class="music-list-message">
+                        <h3 class="title">music</h3>
+                        <p class="name">来首歌吧</p>
+                    </div>
+                    <p class="iconfont icon-shixincaidan"></p>
+                </li> -->
+            </ul>
+        </div>
+        <div id="footer">
+            <img class="audioImg" src="img/pan.jpg" alt="">
+            <div class="footer-r">
+                <div class="progress">
+                    <div class="progress-UP"></div>
+                    <b></b>
+                </div>
+                <div class="footer-r-b">
+                    <div class="audioTxt">
+                        <h4 class="title">music</h4>
+                        <p class="name">来首歌吧</p>
+                    </div>
+                    <div class="audioBtn">
+                        <span class="iconfont icon-bofang"></span>
+                        <span class="iconfont icon-49xiayishou"></span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div id="music-detail">
+            <div class="music-detail-header">
+                <span class="iconfont icon-fanhui"></span>
+                <div class="music-detail-header-name">
+                    <p></p>
+                </div>
+                <span class="iconfont "></span>
+            </div>
+            <div class="music-detail-content">
+                <ul class="music-lyric">
+                </ul>
+            </div>
+            <div class="music-detail-footer">
+                <div class="music-detail-footerT">
+                    <ul class="clearfix">
+                        <li class="iconfont icon-love_icon"></li>
+                        <li class="iconfont icon-plus-download"></li>
+                        <li class="iconfont icon-xinxi"><span></span></li>
+                    </ul>
+                </div>
+                <div class="music-detail-footerC">
+                    <span id="nowtime">00:00</span>
+                    <div id="progress" class="progress">
+                        <div class="proup">
+                        </div>
+                        <b></b>
+                    </div>
+                    <span id="alltime">03:00</span>
+                </div>
+                <div class="music-detail-footerB">
+                    <ul>
+                        <li class="iconfont icon-shunxubofang"></li>
+                        <li  id="musicPre" class="iconfont icon-shangyishoushangyige"></li>
+                        <li id="musicPlay" class="iconfont icon-bofang"></li>
+                        <li id="musicNext" class="iconfont icon-xiayigexiayishou"></li>
+                    </ul>
+                </div>
+                <div id="playWay" class="playWay">
+                    <ul>
+                        <li class="iconfont icon-suijibofang">随机播放</li>
+                        <li class="iconfont icon-icon-">单曲循环</li>
+                        <li class="iconfont icon-shunxubofang">顺序播放</li>
+                    </ul>
+                </div>
+            </div>
+            <div id="message">
+                <div class="message-header">
+                    <span class="iconfont icon-fanhui"></span>
+                    <div class="message-header-name">
+                        <p></p>
+                    </div>
+                </div>
+                <div id="message-content">
+                    <ul class="message-content-list">
+
+                    </ul>
+                </div>
+                <div id="message-footer">
+                    <input type="text" name="" value="" placeholder="期待您的神评论">
+                    <input type="button" name="" value="发送">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <audio src=""></audio>
+    <!-- 默认隐藏 -->
+</body>
+</html>
+<script type="text/javascript" src="js/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="js/myMusic.js"></script>
+<script type="text/javascript">
+    console.log(screen.availWidth);
+</script>
